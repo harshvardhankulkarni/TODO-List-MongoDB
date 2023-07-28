@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Todo List{% endblock %}
+{% block content %}
+<section class="text-gray-600 body-font">
+    <form action="/" method="post" class="container px-5 pt-24 pb-12 mx-auto">
+        <div class="flex flex-col text-center w-full mb-12">
+            <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">TODO List</h1>
+        </div>
+        <div
+                class="flex lg:w-1/2 w-full sm:flex-row flex-col mx-auto px-8 sm:space-x-4 sm:space-y-0 space-y-4 sm:px-0 items-end">
+            <div class="relative flex-grow w-full">
+                <label for="task" class="leading-7 text-sm text-gray-600">Task to add</label>
+                <input type="text" id="task" name="task"
+                       class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-transparent focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                       required>
+            </div>
+            <button type="submit"
+                    class="text-white bg-indigo-500 border-0 py-2 px-2 w-36 focus:outline-none hover:bg-indigo-600 rounded text-lg">
+                Add Task
+            </button>
+        </div>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <div id="alert-border"
+             class="flex p-4 text-gray-800 border-t-4 bg-green-200 border-green-600 mt-12 w-2/3 mx-auto"
+             role="alert">
+            <svg class="flex-shrink-0 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"></path>
+            </svg>
+            <div class="ml-3 text-sm font-medium" id="alert">
+                {{ message }}
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </form>
+</section>
+
+{% if tasks %}
+<section class="text-gray-600 body-font overflow-hidden">
+    <div class="container px-5 py-24 mx-auto">
+        <div class="-my-8 divide-y-2 divide-gray-100">
+            {% for task in tasks %}
+            <div class="py-8 flex flex-wrap md:flex-nowrap">
+                <div class="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
+                    <span class="font-semibold title-font text-gray-700">Task - {{ loop.index }}</span>
+                    <span class="mt-1 text-gray-500 text-sm">{{ task['date'] }}</span>
+                </div>
+                <div class="md:flex-grow">
+                    <h2 class="text-2xl font-medium text-gray-900 title-font mb-2">{{ task['task'] }}</h2>
+                    <a class="bg-red-500 inline-flex items-center mt-4 px-6 py-1 text-white rounded-full mr-2"
+                       href="{{ url_for('task_done', id=task['_id']) }}">Done
+                    </a>
+                    <a class="bg-green-500 inline-flex items-center mt-4 px-6 py-1 text-white rounded-full"
+                       href="{{ url_for('update_task', id=task['_id']) }}">Update Task
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
