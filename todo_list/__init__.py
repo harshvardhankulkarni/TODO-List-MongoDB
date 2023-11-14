@@ -19,4 +19,6 @@ db = PyMongo(app).db
 Tasks = db.tasks
 Users = db.users
 
+Users.create_index('username', unique=True)
+
 from todo_list import routs
