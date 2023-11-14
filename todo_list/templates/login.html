@@ -2,16 +2,9 @@
 {% block title %}Login{% endblock %}
 {% block content %}
 <section class="text-gray-600 body-font">
-    <div class="container px-12 py-24 mx-auto flex flex-wrap items-center my-auto h-screen">
+    <div class="container px-12 pt-12 mx-auto flex flex-wrap items-center my-auto">
         <form action="{{ url_for('login') }}" method="post" class="lg:w-2/5 md:w-full bg-gray-100 rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:m-auto mx-auto ">
             <h2 class="text-gray-900 text-2xl font-medium title-font mb-5">Login</h2>
-             {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            {% for message in messages %}
-            <p class="m-1">{{ message }}</p>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
             <div class="relative mb-4">
                 <label for="username" class="leading-7 text-sm text-gray-600">Username</label>
                 <input required type="text" id="username" name="username"
