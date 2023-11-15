@@ -1,18 +1,21 @@
+import os
+
+from dotenv import load_dotenv
 from flask import Flask
 from flask_pymongo import PyMongo
 from flask_session import Session
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'SECRET_KEY'
 
-app.secret_key = "Something Unique"
+load_dotenv()
+
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-USERNAME = open('./todo_list/USERNAME.txt', 'r').read()
-PASSWORD = open('./todo_list/PASSWORD.txt', 'r').read()
-app.config["MONGO_URI"] = f'mongodb+srv://{USERNAME}:{PASSWORD}@firstmongoproject.aovehzm.mongodb.net/todo_list'
+app.config["MONGO_URI"] = os.getenv('MONGO_URI')
 db = PyMongo(app).db
 
 # Collections

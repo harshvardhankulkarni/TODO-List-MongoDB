@@ -1,6 +1,4 @@
 todo_list/static/src
-todo_list/USERNAME.txt
-todo_list/PASSWORD.txt
 
 # Tailwind CSS Devlopment Setup
 package-lock.json
@@ -11,3 +9,5 @@ flask_session
 
 .idea
 venv
+# enirment variables file
+.env
