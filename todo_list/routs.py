@@ -1,27 +1,28 @@
 from datetime import datetime
 
 from bson.objectid import ObjectId
-from flask import render_template, request, redirect, url_for, flash, session
-from todo_list import app, Tasks, Users
+from flask import render_template, request, redirect, url_for, flash, session, abort
+from todo_list import app, Tasks, Users, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if session.get('user'):
+        user = session['user']
         if request.method == 'POST':
             Tasks.insert_one({'task': request.form['task'],
                               "date": datetime.now().strftime('%d-%m-%Y'),
-                              'user': session['user']['_id']})
+                              'user': user['_id']})
             flash("Task Added Successfully", "g")
             return redirect((url_for('index')))
-        all_task = Tasks.find({"user": ObjectId(session['user']['_id'])}).sort('_id')
+        all_task = Tasks.find({"user": ObjectId(user['_id'])}).sort('_id')
         return render_template('index.html', tasks=all_task)
-    flash('User Not logged in  yet', 'r')
     return redirect(url_for('login'))
 
 
 @app.route('/task-done')
+@login_required
 def task_done():
     flash('Task deleted', 'r')
     Tasks.delete_one({"_id": ObjectId(request.args["id"])})
@@ -29,6 +30,7 @@ def task_done():
 
 
 @app.route('/update-task', methods=['POST', 'GET'])
+@login_required
 def update_task():
     if request.method == 'POST':
         Tasks.update_one({'_id': ObjectId(request.args['id'])},
@@ -43,7 +45,6 @@ def update_task():
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if session.get('user'):
-        flash('User already logged in', 'r')
         return redirect(url_for('index'))
 
     if request.method == 'POST':
@@ -63,16 +64,16 @@ def login():
 
 
 @app.route('/logout')
+@login_required
 def logout():
     if session.get('user'):
-        session.pop('user')
+        del session['user']
         return redirect(url_for('login'))
 
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
     if session.get('user'):
-        flash('User already logged in', 'r')
         return redirect(url_for('index'))
 
     if request.method == 'POST':

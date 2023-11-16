@@ -1,7 +1,8 @@
 import os
+from functools import wraps
 
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, session, abort
 from flask_pymongo import PyMongo
 from flask_session import Session
 
@@ -23,5 +24,17 @@ Tasks = db.tasks
 Users = db.users
 
 Users.create_index('username', unique=True)
+
+
+def login_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if session.get('user'):
+            return f(*args, **kwargs)
+        else:
+            abort(403)
+
+    return wrapper
+
 
 from todo_list import routs
