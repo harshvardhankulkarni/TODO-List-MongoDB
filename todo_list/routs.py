@@ -1,9 +1,10 @@
 from datetime import datetime
 
 from bson.objectid import ObjectId
-from flask import render_template, request, redirect, url_for, flash, session, abort
-from todo_list import app, Tasks, Users, login_required
+from flask import render_template, request, redirect, url_for, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
+
+from todo_list import app, Tasks, Users, login_required
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -13,7 +14,8 @@ def index():
         if request.method == 'POST':
             Tasks.insert_one({'task': request.form['task'],
                               "date": datetime.now().strftime('%d-%m-%Y'),
-                              'user': user['_id']})
+                              'user': user['_id'],
+                              'updated': False})
             flash("Task Added Successfully", "g")
             return redirect((url_for('index')))
         all_task = Tasks.find({"user": ObjectId(user['_id'])}).sort('_id')
@@ -35,7 +37,8 @@ def update_task():
     if request.method == 'POST':
         Tasks.update_one({'_id': ObjectId(request.args['id'])},
                          {'$set': {'task': request.form['updated-task'],
-                                   'date': datetime.now().strftime('%d-%m-%Y')}})
+                                   'date': datetime.now().strftime('%d-%m-%Y'),
+                                   'updated': True}})
         flash('Task Updated Successfully', 'g')
         return redirect(url_for('index'))
     task = Tasks.find_one({'_id': ObjectId(request.args["id"])})
