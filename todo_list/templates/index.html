@@ -33,7 +33,7 @@
                     <span class="mt-1 text-gray-500 text-sm">{{ task['date'] }}</span>
                 </div>
                 <div class="md:flex-grow">
-                    <h2 class="text-2xl font-medium text-gray-900 title-font mb-2">{{ task['task'] }}</h2>
+                    <h2 class="text-2xl font-medium text-gray-900 title-font mb-2">{{ task['task'] }} {% if task['updated'] %} - <small class="text-sm">UPDATED</small>{% endif %}</h2>
                     <a class="bg-red-500 inline-flex items-center mt-4 px-6 py-1 text-white rounded-full mr-2"
                        href="{{ url_for('task_done', id=task['_id']) }}">Done
                     </a>
